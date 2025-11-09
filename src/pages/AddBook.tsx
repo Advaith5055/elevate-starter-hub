@@ -1,43 +1,81 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { toast } from "sonner";
+import { Stepper } from "@/components/AddBook/Stepper";
+import { BookInfoStep } from "@/components/AddBook/BookInfoStep";
+import { ListingTypeStep } from "@/components/AddBook/ListingTypeStep";
+import { ImagesStep } from "@/components/AddBook/ImagesStep";
+import { PreviewStep } from "@/components/AddBook/PreviewStep";
+import { SafetyTips } from "@/components/AddBook/SafetyTips";
+
+const steps = [
+  { label: "Book Info", description: "Basic details" },
+  { label: "Listing Type", description: "How to share" },
+  { label: "Images", description: "Upload photos" },
+  { label: "Preview", description: "Review & publish" }
+];
 
 const AddBook = () => {
   const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [agreed, setAgreed] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     author: "",
-    genre: "",
-    year: "",
-    pages: "",
-    publisher: "",
+    genres: [],
+    language: "",
+    isbn: "",
     description: "",
-    cover: ""
+    listingTypes: [],
+    price: "",
+    condition: "",
+    shipping: "",
+    lookingFor: "",
+    pickupLocation: "",
+    deliveryPrefs: "",
+    borrowDuration: "",
+    deposit: "",
+    visibility: "public",
+    images: []
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Book added successfully!");
+  const handleSubmit = () => {
+    if (!agreed) {
+      toast.error("Please agree to the terms and conditions");
+      return;
+    }
+    toast.success("Book listing published successfully!");
     navigate("/books");
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleSaveDraft = () => {
+    toast.success("Draft saved successfully!");
+    navigate("/profile");
+  };
+
+  const canProceed = () => {
+    switch (currentStep) {
+      case 0:
+        return formData.title && formData.author;
+      case 1:
+        return formData.listingTypes.length > 0;
+      case 2:
+        return formData.images.length > 0;
+      case 3:
+        return agreed;
+      default:
+        return true;
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -54,158 +92,86 @@ const AddBook = () => {
             Add a New Book
           </h1>
           <p className="text-muted-foreground">
-            Share a book with the community
+            Share your book through sell, swap, share, or borrow
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-card border border-border rounded-2xl p-8 space-y-6">
-            {/* Book Cover */}
-            <div>
-              <Label htmlFor="cover" className="text-foreground font-medium mb-2 block">
-                Book Cover
-              </Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-foreground font-medium mb-1">Click to upload cover image</p>
-                <p className="text-sm text-muted-foreground">PNG, JPG up to 10MB</p>
-              </div>
-            </div>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Form - Left Column */}
+          <div className="lg:col-span-2">
+            <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+              {/* Stepper */}
+              <Stepper steps={steps} currentStep={currentStep} />
 
-            {/* Title */}
-            <div>
-              <Label htmlFor="title" className="text-foreground font-medium">
-                Book Title *
-              </Label>
-              <Input
-                id="title"
-                name="title"
-                type="text"
-                placeholder="Enter book title"
-                value={formData.title}
-                onChange={handleChange}
-                className="mt-2 h-12 bg-background border-border rounded-xl"
-                required
-              />
-            </div>
-
-            {/* Author */}
-            <div>
-              <Label htmlFor="author" className="text-foreground font-medium">
-                Author *
-              </Label>
-              <Input
-                id="author"
-                name="author"
-                type="text"
-                placeholder="Enter author name"
-                value={formData.author}
-                onChange={handleChange}
-                className="mt-2 h-12 bg-background border-border rounded-xl"
-                required
-              />
-            </div>
-
-            {/* Genre and Year */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="genre" className="text-foreground font-medium">
-                  Genre *
-                </Label>
-                <Input
-                  id="genre"
-                  name="genre"
-                  type="text"
-                  placeholder="e.g., Science Fiction"
-                  value={formData.genre}
-                  onChange={handleChange}
-                  className="mt-2 h-12 bg-background border-border rounded-xl"
-                  required
-                />
+              {/* Step Content */}
+              <div className="mt-8">
+                {currentStep === 0 && (
+                  <BookInfoStep formData={formData} setFormData={setFormData} />
+                )}
+                {currentStep === 1 && (
+                  <ListingTypeStep formData={formData} setFormData={setFormData} />
+                )}
+                {currentStep === 2 && (
+                  <ImagesStep formData={formData} setFormData={setFormData} />
+                )}
+                {currentStep === 3 && (
+                  <PreviewStep formData={formData} agreed={agreed} setAgreed={setAgreed} />
+                )}
               </div>
-              <div>
-                <Label htmlFor="year" className="text-foreground font-medium">
-                  Publication Year
-                </Label>
-                <Input
-                  id="year"
-                  name="year"
-                  type="number"
-                  placeholder="e.g., 2023"
-                  value={formData.year}
-                  onChange={handleChange}
-                  className="mt-2 h-12 bg-background border-border rounded-xl"
-                />
-              </div>
-            </div>
 
-            {/* Pages and Publisher */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="pages" className="text-foreground font-medium">
-                  Number of Pages
-                </Label>
-                <Input
-                  id="pages"
-                  name="pages"
-                  type="number"
-                  placeholder="e.g., 350"
-                  value={formData.pages}
-                  onChange={handleChange}
-                  className="mt-2 h-12 bg-background border-border rounded-xl"
-                />
-              </div>
-              <div>
-                <Label htmlFor="publisher" className="text-foreground font-medium">
-                  Publisher
-                </Label>
-                <Input
-                  id="publisher"
-                  name="publisher"
-                  type="text"
-                  placeholder="Publisher name"
-                  value={formData.publisher}
-                  onChange={handleChange}
-                  className="mt-2 h-12 bg-background border-border rounded-xl"
-                />
-              </div>
-            </div>
+              {/* Navigation Buttons */}
+              <div className="flex gap-4 mt-8 pt-6 border-t border-border">
+                {currentStep > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setCurrentStep(currentStep - 1)}
+                    className="h-12 px-8 rounded-xl"
+                  >
+                    Back
+                  </Button>
+                )}
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleSaveDraft}
+                  className="h-12 px-6 rounded-xl"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Draft
+                </Button>
 
-            {/* Description */}
-            <div>
-              <Label htmlFor="description" className="text-foreground font-medium">
-                Description
-              </Label>
-              <Textarea
-                id="description"
-                name="description"
-                placeholder="Write a brief description of the book..."
-                value={formData.description}
-                onChange={handleChange}
-                className="mt-2 min-h-32 bg-background border-border rounded-xl resize-none"
-              />
+                {currentStep < steps.length - 1 ? (
+                  <Button
+                    type="button"
+                    onClick={() => setCurrentStep(currentStep + 1)}
+                    disabled={!canProceed()}
+                    className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium shadow-lg"
+                  >
+                    Next Step
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={!canProceed()}
+                    className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium shadow-lg"
+                  >
+                    Publish Listing
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="flex gap-4">
-            <Button
-              type="submit"
-              className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-base font-medium shadow-lg hover-lift"
-            >
-              Add Book
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/books")}
-              className="h-12 px-8 rounded-xl"
-            >
-              Cancel
-            </Button>
+          {/* Sidebar - Right Column */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8">
+              <SafetyTips />
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
