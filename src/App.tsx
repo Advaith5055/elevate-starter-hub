@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Books from "./pages/Books";
+import Marketplace from "./pages/Marketplace";
 import BookDetail from "./pages/BookDetail";
 import Community from "./pages/Community";
 import Profile from "./pages/Profile";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/books" element={<Books />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/book/:id" element={<BookDetail />} />
           <Route path="/community" element={<Community />} />
           <Route path="/profile" element={<Profile />} />
