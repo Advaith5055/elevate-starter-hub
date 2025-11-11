@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Share2, TrendingUp, Clock, Flame } from "lucide-react";
+import { Heart, MessageCircle, Share2, TrendingUp, Clock } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
+import { FollowButton } from "@/components/FollowButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -28,14 +29,14 @@ interface Post {
 const Community = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [activeFilter, setActiveFilter] = useState("trending");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPosts = async () => {
     setLoading(true);
     
-    const { data, error } = await supabase
+    let query = supabase
       .from("posts")
       .select(`
         *,
@@ -44,6 +45,26 @@ const Community = () => {
         comments(id)
       `)
       .order("created_at", { ascending: false });
+
+    // If "following" filter, only show posts from followed users
+    if (activeFilter === "following" && user) {
+      const { data: follows } = await supabase
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", user.id);
+      
+      const followingIds = follows?.map(f => f.following_id) || [];
+      
+      if (followingIds.length === 0) {
+        setPosts([]);
+        setLoading(false);
+        return;
+      }
+      
+      query = query.in("user_id", followingIds);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       toast.error("Failed to load posts");
@@ -124,7 +145,7 @@ const Community = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, activeFilter]);
 
   const toggleLike = async (postId: string, currentlyLiked: boolean) => {
     if (!user) {
@@ -156,9 +177,8 @@ const Community = () => {
   };
 
   const filters = [
-    { id: "trending", label: "Trending", icon: TrendingUp },
-    { id: "recent", label: "Recent", icon: Clock },
-    { id: "popular", label: "Popular", icon: Flame }
+    { id: "all", label: "All Posts", icon: TrendingUp },
+    { id: "following", label: "Following", icon: Clock },
   ];
 
   return (
@@ -203,8 +223,12 @@ const Community = () => {
             <div className="text-center py-12 text-muted-foreground">Loading posts...</div>
           ) : posts.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No posts yet. Be the first to share!</p>
-              {user && <CreatePostDialog onPostCreated={fetchPosts} />}
+              <p className="text-muted-foreground mb-4">
+                {activeFilter === "following" 
+                  ? "No posts from users you follow yet. Follow more readers to see their posts here!" 
+                  : "No posts yet. Be the first to share!"}
+              </p>
+              {user && activeFilter === "all" && <CreatePostDialog onPostCreated={fetchPosts} />}
             </div>
           ) : (
             posts.map((post, idx) => (
@@ -222,7 +246,7 @@ const Community = () => {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-semibold text-foreground">
                       {post.profiles.full_name || "Anonymous"}
                     </h3>
@@ -237,6 +261,9 @@ const Community = () => {
                   <div className="text-sm text-primary mt-1">
                     Reading: {post.book_title}
                   </div>
+                </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <FollowButton userId={post.profiles.id} variant="outline" size="sm" />
                 </div>
               </div>
 

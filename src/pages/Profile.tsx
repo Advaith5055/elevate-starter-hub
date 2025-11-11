@@ -43,6 +43,8 @@ interface Profile {
   swaps_completed: number;
   reviews_written: number;
   member_since: string;
+  followers_count: number;
+  following_count: number;
 }
 
 const Profile = () => {
@@ -309,11 +311,21 @@ const Profile = () => {
                 )}
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-4 mt-6">
+                  <div className="bg-accent/20 rounded-xl p-4 text-center">
+                    <User className="w-5 h-5 text-primary mx-auto mb-1" />
+                    <p className="text-2xl font-bold text-foreground">{profile.followers_count}</p>
+                    <p className="text-xs text-muted-foreground">Followers</p>
+                  </div>
+                  <div className="bg-accent/20 rounded-xl p-4 text-center">
+                    <User className="w-5 h-5 text-primary mx-auto mb-1" />
+                    <p className="text-2xl font-bold text-foreground">{profile.following_count}</p>
+                    <p className="text-xs text-muted-foreground">Following</p>
+                  </div>
                   <div className="bg-accent/20 rounded-xl p-4 text-center">
                     <BookOpen className="w-5 h-5 text-primary mx-auto mb-1" />
                     <p className="text-2xl font-bold text-foreground">{profile.books_added}</p>
-                    <p className="text-xs text-muted-foreground">Books Added</p>
+                    <p className="text-xs text-muted-foreground">Books</p>
                   </div>
                   <div className="bg-accent/20 rounded-xl p-4 text-center">
                     <RefreshCw className="w-5 h-5 text-primary mx-auto mb-1" />
@@ -328,7 +340,7 @@ const Profile = () => {
                   <div className="bg-accent/20 rounded-xl p-4 text-center">
                     <FileText className="w-5 h-5 text-primary mx-auto mb-1" />
                     <p className="text-2xl font-bold text-foreground">{profile.books_read}</p>
-                    <p className="text-xs text-muted-foreground">Books Read</p>
+                    <p className="text-xs text-muted-foreground">Read</p>
                   </div>
                 </div>
               </div>
