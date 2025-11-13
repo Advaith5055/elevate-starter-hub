@@ -1,4 +1,4 @@
-import { BookOpen, Search, Users, MessageCircle, User, Plus, Store } from "lucide-react";
+import { BookOpen, Search, Users, MessageCircle, User, Plus, Store, Compass } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 
@@ -10,6 +10,7 @@ const Navigation = () => {
     { icon: Store, label: "Marketplace", path: "/marketplace" },
     { icon: Search, label: "Books", path: "/books" },
     { icon: Users, label: "Community", path: "/community" },
+    { icon: Compass, label: "Discover", path: "/discover" },
     { icon: MessageCircle, label: "Chat", path: "/chat" },
     { icon: User, label: "Profile", path: "/profile" },
   ];
