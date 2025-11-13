@@ -9,20 +9,21 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/10 -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-accent-glow/20 to-golden/10 -z-10" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM2QjRGNEYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE2djZoLTZ2LTZoNnpNMjQgMjh2Nmgtdi02aDZ6TTM2IDI4djZoLTZ2LTZoNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40 -z-10" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <div className="text-center animate-fade-in">
-            <div className="flex justify-center mb-6">
-              <div className="inline-flex items-center space-x-3 bg-accent/30 px-6 py-2 rounded-full">
-                <BookOpen className="w-5 h-5 text-primary" />
-                <span className="text-sm font-medium text-primary">Your Literary Universe</span>
+          <div className="text-center animate-fade-in-up">
+            <div className="flex justify-center mb-6 animate-bounce-subtle">
+              <div className="inline-flex items-center space-x-3 glassy-card px-6 py-3 rounded-full shadow-lg">
+                <BookOpen className="w-5 h-5 text-primary animate-float" />
+                <span className="text-sm font-semibold text-primary">Your Literary Universe</span>
               </div>
             </div>
             
             <h1 className="font-heading text-5xl md:text-7xl font-bold text-foreground mb-6 tracking-tight">
               Find, Share, and<br />
-              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              <span className="text-gradient animate-glow">
                 Discuss Books
               </span>
             </h1>
@@ -31,19 +32,19 @@ const Home = () => {
               Discover your next favorite book, connect with fellow readers, and join a vibrant community of book lovers.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-scale-in">
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-xl shadow-lg hover-lift"
+                className="btn-gradient text-primary-foreground px-10 py-7 text-lg rounded-2xl shadow-elegant hover-lift group"
                 onClick={() => navigate("/auth")}
               >
                 Get Started
-                <BookOpen className="ml-2 w-5 h-5" />
+                <BookOpen className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="px-8 py-6 text-lg rounded-xl border-2 hover:bg-accent/20"
+                className="px-10 py-7 text-lg rounded-2xl border-2 hover:bg-accent/30 hover-scale glassy-card"
                 onClick={() => navigate("/books")}
               >
                 Explore Books
@@ -55,10 +56,12 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-b from-background to-accent/5">
+      <section className="py-20 bg-gradient-to-b from-background via-accent-glow/5 to-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--accent-glow)/0.1),transparent_50%)] -z-10" />
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4">
               Everything You Need
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -71,36 +74,41 @@ const Home = () => {
               {
                 icon: Search,
                 title: "Discover Books",
-                description: "Search through thousands of books and find your next read"
+                description: "Search through thousands of books and find your next read",
+                gradient: "from-primary/10 to-accent/10"
               },
               {
                 icon: Users,
                 title: "Join Community",
-                description: "Connect with readers who share your literary interests"
+                description: "Connect with readers who share your literary interests",
+                gradient: "from-accent/10 to-golden/10"
               },
               {
                 icon: MessageCircle,
                 title: "Share Reviews",
-                description: "Write reviews and discuss books with fellow enthusiasts"
+                description: "Write reviews and discuss books with fellow enthusiasts",
+                gradient: "from-golden/10 to-primary/10"
               },
               {
                 icon: TrendingUp,
                 title: "Track Progress",
-                description: "Keep track of what you're reading and your reading goals"
+                description: "Keep track of what you're reading and your reading goals",
+                gradient: "from-accent-glow/10 to-accent/10"
               }
             ].map((feature, idx) => (
               <div
                 key={idx}
-                className="bg-card p-8 rounded-2xl border border-border hover-lift group cursor-pointer"
+                className="card-premium p-8 rounded-3xl group cursor-pointer relative overflow-hidden animate-scale-in"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
-                <div className="w-14 h-14 bg-accent/30 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity -z-10`} />
+                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
                   <feature.icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="font-heading text-xl font-semibold mb-3 text-foreground">
+                <h3 className="font-heading text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
               </div>
