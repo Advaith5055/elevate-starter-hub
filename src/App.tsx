@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
 import AddBook from "./pages/AddBook";
 import PostDetail from "./pages/PostDetail";
+import Discover from "./pages/Discover";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/book/:id" element={<BookDetail />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/discover" element={<Discover />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/add-book" element={<AddBook />} />
