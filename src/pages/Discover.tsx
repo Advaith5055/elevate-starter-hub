@@ -76,7 +76,7 @@ const Discover = () => {
   };
 
   const UserCard = ({ user: profile }: { user: UserProfile }) => (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="card-premium animate-slide-in-left">
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
           <Avatar
@@ -141,14 +141,14 @@ const Discover = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <main className="max-w-5xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-              <Star className="w-5 h-5 text-primary" />
+        <div className="mb-8 animate-fade-in-up">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center shadow-lg animate-scale-bounce">
+              <Star className="w-6 h-6 text-primary" />
             </div>
-            <h1 className="text-3xl font-heading font-bold">Discover Readers</h1>
+            <h1 className="text-3xl md:text-4xl font-heading font-bold text-gradient">Discover Readers</h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             Find and follow readers with similar interests and active reading communities
           </p>
         </div>

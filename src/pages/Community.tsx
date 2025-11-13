@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Share2, TrendingUp, Clock } from "lucide-react";
+import { Heart, MessageCircle, Share2, TrendingUp, Clock, Users } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { FollowButton } from "@/components/FollowButton";
@@ -187,12 +187,17 @@ const Community = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between animate-fade-in-up">
           <div>
-            <h1 className="font-heading text-4xl font-bold text-foreground mb-2">
-              Community Feed
-            </h1>
-            <p className="text-muted-foreground">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center shadow-lg animate-scale-bounce">
+                <Users className="w-6 h-6 text-primary" />
+              </div>
+              <h1 className="font-heading text-3xl md:text-4xl font-bold text-gradient">
+                Community Feed
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-lg ml-15">
               See what fellow readers are discussing
             </p>
           </div>
@@ -205,14 +210,14 @@ const Community = () => {
             <button
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
-              className={`flex items-center space-x-2 px-6 py-2.5 rounded-full whitespace-nowrap transition-all ${
+              className={`flex items-center space-x-2 px-6 py-3 rounded-full whitespace-nowrap transition-all shadow-md hover-scale ${
                 activeFilter === filter.id
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-card text-foreground hover:bg-accent/50 border border-border"
+                  ? "btn-gradient text-primary-foreground"
+                  : "glassy-card text-foreground hover:bg-accent/50"
               }`}
             >
               <filter.icon className="w-4 h-4" />
-              <span>{filter.label}</span>
+              <span className="font-semibold">{filter.label}</span>
             </button>
           ))}
         </div>
@@ -234,8 +239,8 @@ const Community = () => {
             posts.map((post, idx) => (
             <div
               key={post.id}
-              className="bg-card border border-border rounded-2xl p-6 hover-lift cursor-pointer animate-fade-in"
-              style={{ animationDelay: `${idx * 100}ms` }}
+              className="card-premium rounded-3xl p-6 cursor-pointer animate-fade-in-up"
+              style={{ animationDelay: `${idx * 50}ms` }}
               onClick={() => navigate(`/post/${post.id}`)}
             >
               {/* User Info */}
