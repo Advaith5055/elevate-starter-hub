@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Users, MessageCircle, TrendingUp, Star, Search, Heart } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import Navigation from "@/components/Navigation";
 
 const Home = () => {
   const navigate = useNavigate();
+  const featuresAnimation = useScrollAnimation();
+  const statsAnimation = useScrollAnimation();
+  const ctaAnimation = useScrollAnimation();
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-accent-glow/20 to-golden/10 -z-10" />
@@ -69,7 +75,12 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div 
+            ref={featuresAnimation.ref}
+            className={`grid md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-700 ${
+              featuresAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
+          >
             {[
               {
                 icon: Search,
@@ -120,7 +131,12 @@ const Home = () => {
       {/* Stats Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div 
+            ref={statsAnimation.ref}
+            className={`grid md:grid-cols-3 gap-8 text-center transition-all duration-700 delay-100 ${
+              statsAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
+          >
             {[
               { number: "10,000+", label: "Books", icon: BookOpen },
               { number: "5,000+", label: "Active Readers", icon: Users },
@@ -143,7 +159,12 @@ const Home = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/5 via-accent/10 to-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-card p-12 rounded-3xl border border-border shadow-xl">
+          <div 
+            ref={ctaAnimation.ref}
+            className={`bg-card p-12 rounded-3xl border border-border shadow-xl transition-all duration-700 delay-200 ${
+              ctaAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            }`}
+          >
             <Heart className="w-16 h-16 text-accent mx-auto mb-6 animate-float" />
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
               Start Your Reading Journey Today
