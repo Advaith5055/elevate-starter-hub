@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -128,8 +129,34 @@ const Profile = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-          <p className="text-muted-foreground">Loading profile...</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="animate-fade-in space-y-8">
+            {/* Header Skeleton */}
+            <Card className="card-premium">
+              <CardContent className="p-8">
+                <div className="flex flex-col md:flex-row gap-8">
+                  <div className="skeleton-pulse w-32 h-32 rounded-full bg-muted" />
+                  <div className="flex-1 space-y-4">
+                    <div className="skeleton-pulse h-8 w-48 bg-muted rounded" />
+                    <div className="skeleton-pulse h-4 w-32 bg-muted rounded" />
+                    <div className="skeleton-pulse h-20 w-full bg-muted rounded" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Stats Skeleton */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[...Array(5)].map((_, i) => (
+                <Card key={i} className="card-premium">
+                  <CardContent className="p-6 space-y-2">
+                    <div className="skeleton-pulse h-8 w-12 bg-muted rounded" />
+                    <div className="skeleton-pulse h-4 w-24 bg-muted rounded" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
