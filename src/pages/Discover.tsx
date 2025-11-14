@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FollowButton } from "@/components/FollowButton";
 import { Users, BookOpen, MessageSquare, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface UserProfile {
   id: string;
@@ -186,9 +187,25 @@ const Discover = () => {
           </Card>
         ) : (
           <div className="space-y-4">
-            {users.map((profile) => (
-              <UserCard key={profile.id} user={profile} />
-            ))}
+            {users.map((profile, index) => {
+              const UserCardWithAnimation = () => {
+                const cardAnimation = useScrollAnimation({ threshold: 0.2 });
+                
+                return (
+                  <div
+                    ref={cardAnimation.ref}
+                    className={`transition-all duration-500 ${
+                      cardAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    }`}
+                    style={{ transitionDelay: `${index * 100}ms` }}
+                  >
+                    <UserCard user={profile} />
+                  </div>
+                );
+              };
+              
+              return <UserCardWithAnimation key={profile.id} />;
+            })}
           </div>
         )}
       </main>

@@ -2,8 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { AnimatePresence } from "framer-motion";
+import { PageTransition } from "./components/PageTransition";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Books from "./pages/Books";
@@ -19,6 +21,29 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+        <Route path="/books" element={<PageTransition><Books /></PageTransition>} />
+        <Route path="/marketplace" element={<PageTransition><Marketplace /></PageTransition>} />
+        <Route path="/book/:id" element={<PageTransition><BookDetail /></PageTransition>} />
+        <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+        <Route path="/discover" element={<PageTransition><Discover /></PageTransition>} />
+        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="/chat" element={<PageTransition><Chat /></PageTransition>} />
+        <Route path="/add-book" element={<PageTransition><AddBook /></PageTransition>} />
+        <Route path="/post/:id" element={<PageTransition><PostDetail /></PageTransition>} />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -26,20 +51,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/books" element={<Books />} />
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/book/:id" element={<BookDetail />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/discover" element={<Discover />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/add-book" element={<AddBook />} />
-            <Route path="/post/:id" element={<PostDetail />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AnimatedRoutes />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

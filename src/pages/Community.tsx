@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface Post {
   id: string;
@@ -237,13 +238,20 @@ const Community = () => {
               {user && activeFilter === "all" && <CreatePostDialog onPostCreated={fetchPosts} />}
             </div>
           ) : (
-            posts.map((post, idx) => (
-            <div
-              key={post.id}
-              className="card-premium rounded-3xl p-6 cursor-pointer animate-fade-in-up"
-              style={{ animationDelay: `${idx * 50}ms` }}
-              onClick={() => navigate(`/post/${post.id}`)}
-            >
+            posts.map((post, idx) => {
+              const PostCard = () => {
+                const cardAnimation = useScrollAnimation({ threshold: 0.2 });
+                
+                return (
+                  <div
+                    ref={cardAnimation.ref}
+                    key={post.id}
+                    className={`card-premium rounded-3xl p-6 cursor-pointer animate-fade-in-up transition-all duration-500 ${
+                      cardAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    }`}
+                    style={{ animationDelay: `${idx * 50}ms` }}
+                    onClick={() => navigate(`/post/${post.id}`)}
+                  >
               {/* User Info */}
               <div className="flex items-start gap-4 mb-4">
                 <img
@@ -317,7 +325,11 @@ const Community = () => {
                 </button>
               </div>
             </div>
-            ))
+                );
+              };
+              
+              return <PostCard key={post.id} />;
+            })
           )}
         </div>
       </div>
