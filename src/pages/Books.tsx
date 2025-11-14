@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Search, SlidersHorizontal, Star, BookOpen, Heart, Plus } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 
 const mockBooks = [
   {
@@ -69,6 +71,7 @@ const Books = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const toggleFavorite = (bookId: number) => {
     setFavorites(prev =>
@@ -77,6 +80,12 @@ const Books = () => {
         : [...prev, bookId]
     );
   };
+
+  useEffect(() => {
+    // Simulate loading
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filteredBooks = mockBooks.filter(book => {
     const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -142,59 +151,77 @@ const Books = () => {
         </div>
 
         {/* Books Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBooks.map((book, idx) => (
-            <div
-              key={book.id}
-              className="bg-card border border-border rounded-2xl overflow-hidden hover-lift group cursor-pointer animate-fade-in"
-              style={{ animationDelay: `${idx * 50}ms` }}
-            >
-              <div className="relative h-80 overflow-hidden">
-                <img
-                  src={book.cover}
-                  alt={book.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  onClick={() => navigate(`/book/${book.id}`)}
-                />
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(book.id);
-                  }}
-                  className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
-                >
-                  <Heart
-                    className={`w-5 h-5 ${
-                      favorites.includes(book.id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-600"
-                    }`}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="overflow-hidden">
+                <Skeleton className="w-full h-80 rounded-none" />
+                <CardContent className="p-4 space-y-3">
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredBooks.map((book, idx) => (
+              <div
+                key={book.id}
+                className="bg-card border border-border rounded-2xl overflow-hidden hover-lift group cursor-pointer animate-fade-in"
+                style={{ animationDelay: `${idx * 50}ms` }}
+              >
+                <div className="relative h-80 overflow-hidden">
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onClick={() => navigate(`/book/${book.id}`)}
                   />
-                </button>
-              </div>
-              
-              <div className="p-6" onClick={() => navigate(`/book/${book.id}`)}>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs px-3 py-1 bg-accent/30 text-primary rounded-full font-medium">
-                    {book.genre}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{book.year}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(book.id);
+                    }}
+                    className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                  >
+                    <Heart
+                      className={`w-5 h-5 ${
+                        favorites.includes(book.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-600"
+                      }`}
+                    />
+                  </button>
                 </div>
                 
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-1 line-clamp-1">
-                  {book.title}
-                </h3>
-                <p className="text-muted-foreground mb-3">{book.author}</p>
-                
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium text-foreground">{book.rating}</span>
-                  <span className="text-sm text-muted-foreground ml-1">rating</span>
+                <div className="p-6" onClick={() => navigate(`/book/${book.id}`)}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs px-3 py-1 bg-accent/30 text-primary rounded-full font-medium">
+                      {book.genre}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{book.year}</span>
+                  </div>
+                  
+                  <h3 className="font-heading text-xl font-semibold text-foreground mb-1 line-clamp-1">
+                    {book.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-3">{book.author}</p>
+                  
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-medium text-foreground">{book.rating}</span>
+                    <span className="text-sm text-muted-foreground ml-1">rating</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {filteredBooks.length === 0 && (
           <div className="text-center py-20">

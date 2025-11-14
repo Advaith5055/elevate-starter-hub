@@ -39,7 +39,39 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!asChild) {
+        const button = e.currentTarget;
+        const ripple = document.createElement("span");
+        const rect = button.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.className = "ripple-effect";
+        
+        button.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      }
+      
+      props.onClick?.(e);
+    };
+    
+    return (
+      <Comp 
+        className={cn(buttonVariants({ variant, size, className }), "relative overflow-hidden")} 
+        ref={ref} 
+        {...props}
+        onClick={asChild ? props.onClick : handleClick}
+      />
+    );
   },
 );
 Button.displayName = "Button";

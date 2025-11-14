@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, Share2, TrendingUp, Clock, Users } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Navigation from "@/components/Navigation";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { FollowButton } from "@/components/FollowButton";
